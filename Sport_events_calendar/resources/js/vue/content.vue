@@ -1,18 +1,31 @@
 <template>
   <div>
-    <input v-model="home_team" placeholder="Add new home-team">
-
-    <input v-model="away_team" placeholder="Add new away-team">
-
-
-
     <select v-model="primary_category">
       <option disabled value="">Choose a Sport</option>
       <option>A</option>
       <option>B</option>
       <option>C</option>
     </select>
-    <span>Selected:</span>
+
+
+
+    <select v-if="primary_category" v-model="home_team">
+      <option disabled value="">Select Home Team</option>
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+    </select>
+
+
+    <select v-if="primary_category" v-model="away_team">
+      <option disabled value="">Select Away Team</option>
+      <option>A</option>
+      <option>B</option>
+      <option>C</option>
+    </select>
+
+
+
 
 
     <datetime v-model="start_time"></datetime>
@@ -52,11 +65,15 @@ import { Datetime } from 'vue-datetime';
         home_team: null,
         away_team: null,
         primary_category: null,
-start_time: null
+        primaryCategories: null,
+        allTeams: null,
+        start_time: null
       }
     },
     mounted() {
       this.getEvents()
+      this.getPrimaryCategory()
+      this.getTeams()
     },
     methods: {
     getEvents(){
@@ -67,10 +84,41 @@ start_time: null
                 console.log(error)
               })
             },
-            createEvent() {},
-            deleteEvent() {},
-            editEvent() {}
-        }
+    createEvent()
+            {
+              axios.post('/api/event/store', {  
+                name: this.name,  
+                description: this.description  
+                })  
+                .then(function (response) {  
+                    currentObj.output = response.data;  
+                })  
+                .catch(function (error) {  
+                    currentObj.output = error;  
+                });  
+            },
+    deleteEvent() {},
+    editEvent() {},
+    getPrimaryCategory(){
+              axios.get('/api/primary-categories')
+              .then((response)=>{
+                this.primaryCategories = response.data
+              }).catch(error => {
+                console.log(error)
+              })
+              
+    },
+        getTeams(){
+              axios.get('/api/teams')
+              .then((response)=>{
+                this.allTeams = response.data
+              }).catch(error => {
+                console.log(error)
+              })
+              
+    }
+    },
+        
   }
 </script>
 

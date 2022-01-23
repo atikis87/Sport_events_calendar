@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\PrimaryCategory;
+use App\Http\Controllers\Teams;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,14 +23,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('/events', [EventController::class, 'index']);
-Route::prefix('/event')->group(function()
+Route::get('/events', [EventController::class, 'index']); 
+Route::prefix('/event')->group(function()           
 {
-    Route::post('/store', [EventController::class, 'store' ]);
-    Route::post('/{id}', [EventController::class, 'update' ]);
-    Route::post('/{id}', [EventController::class, 'destroy' ]);
+    Route::post('/store', [EventController::class, 'store' ]);//    /api/event/store/
+    Route::post('/edit/{id}', [EventController::class, 'update' ]);//    /api/event/edit/ID
+    Route::post('/delete/{id}', [EventController::class, 'destroy' ]);//    /api/event/delete/ID
+
+
 });
 
+
+Route::get('/primary-categories', [PrimaryCategory::class, 'index']); 
+
+Route::get('/teams', [Teams::class, 'index']); 
 
 
 
