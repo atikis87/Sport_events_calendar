@@ -1,15 +1,23 @@
 <template>
-    <div id="app">
-        <anyChild></anyChild>
-        <h1>Hello World</h1>
-    </div>
+  <div id="app">
+    <Head></Head>
+    <Content></Content>
+    <Footer></Footer>
+  </div>
 </template>
 
 <script>
+import Head from './vue/head.vue'
+import Content from './vue/content.vue'
+import Footer from './vue/footer.vue'
 
-import anyChild from './vue/addTableForm.vue'
 export default{
     name: "app",
-    components: {anyChild}
+    components: {Head, Content,Footer}
 }
 </script>
+
+
+<style>
+
+</style>
