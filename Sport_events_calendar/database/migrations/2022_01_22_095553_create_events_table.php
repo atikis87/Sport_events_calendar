@@ -21,6 +21,7 @@ class CreateEventsTable extends Migration
             $table->foreignId('away_team_id'); 
             $table->foreignId('primary_category_id');       
             $table->datetime('start_time');
+            $table->timestamps();
 
             $table->foreign('home_team_id','home_foreign')->references('id')->on('teams');
             $table->foreign('away_team_id','away_foreign')->references('id')->on('teams');

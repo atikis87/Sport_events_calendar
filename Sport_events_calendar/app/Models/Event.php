@@ -15,7 +15,7 @@ class Event extends Model
     use HasFactory;
 
     protected $table = 'events';
-    protected $attributes = [
+    protected $fillable = [
         'home_team_id', 
         'away_team_id',
         'start_time',

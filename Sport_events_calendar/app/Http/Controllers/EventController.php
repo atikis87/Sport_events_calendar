@@ -45,7 +45,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        dump($request); Event::create(); // ......
+        dump($request->all());
+        Event::create($request->all()); 
     }
 
     /**

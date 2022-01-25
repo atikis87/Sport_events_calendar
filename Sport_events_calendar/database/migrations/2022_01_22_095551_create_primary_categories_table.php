@@ -17,10 +17,7 @@ class CreatePrimaryCategoriesTable extends Migration
         {
             $table->id();
             $table->string('display_name', 50);
-
-        
-            
-
+            $table->timestamps();
         });
     }
 

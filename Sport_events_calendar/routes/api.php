@@ -35,9 +35,22 @@ Route::prefix('/event')->group(function()
 
 
 Route::get('/primary-categories', [PrimaryCategory::class, 'index']); 
+Route::prefix('/primaryCategory')->group(function()           
+{
+
+  
+
+});
+
+
 
 Route::get('/teams', [Teams::class, 'index']); 
+Route::prefix('/team')->group(function()           
+{
 
+  
+
+});
 
 
 
