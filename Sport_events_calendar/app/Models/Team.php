@@ -14,7 +14,7 @@ class Team extends Model
     use HasFactory;
 
     protected $table = 'teams';
-    protected $attributes = [
+    protected $fillable = [
         'primary_category_id',
         'display_name'
     ];

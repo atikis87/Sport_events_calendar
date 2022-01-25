@@ -14,7 +14,7 @@ class PrimaryCategory extends Model
     use HasFactory;
 
     protected $table = 'primary_categories';
-    protected $attributes = [
+    protected $fillable = [
         'display_name'
     ];
 
