@@ -47,17 +47,31 @@
 
     <tr v-for="event in events" :key="event.id">
         <td v-if="event && event.hasOwnProperty('home_team')">{{ event.home_team.display_name }}</td>
-        <td v-if="event && event.hasOwnProperty('away_team')">{{ event.away_team.display_name }}</td>
+        <td v-if="event && event.hasOwnProperty('away_team')">{{ event.away_team.display_name }}</td> 
+        <b-button variant="warning" v-on:click="editEvent(event.id)">Edit</b-button>
+        <b-button variant="danger" v-on:click="deleteEvent(event.id)">Delete</b-button>
     </tr>
   </table>
 </div>
 </template>
 
 <script>
-import { Datetime } from 'vue-datetime';
+import { Datetime } from '@/vue-datetime'
+import VueNotifications from 'vue-notifications'
+
   export default {
     components:{
     datetime: Datetime
+  },
+    notifications: {
+    errorMessage: {
+      type: VueNotifications.types.error,
+      title: 'Error'
+    },
+    successMessage: {
+      type: VueNotifications.types.success,
+      title: 'Success'
+    }
   },
     data(){
       return{
@@ -100,16 +114,20 @@ import { Datetime } from 'vue-datetime';
         })  
       .then(function (response)
       {  
+        //display success
+      
         console.log(response.data)  
       })  
       .catch(function (error)
       {  
+        //display error.... call this.showError()
+        // foreach() loop maybe
        console.log(error)  
       });  
     },
-    deleteEvent() /*EDIT HERE*/
+    deleteEvent($id) /* Send the ID of the event only*/
     {
-      axios.post('/api/event/delete',{home_team: this.home_team,description: this.description})  
+      axios.post('/api/event/delete',{$id})  
       .then(function (response)
       {  
         currentObj.output = response.data;  
@@ -120,7 +138,7 @@ import { Datetime } from 'vue-datetime';
       });  
 
     },
-    editEvent()/*EDIT HERE*/
+    editEvent($id)/*EDIT HERE*/
     {
       axios.post('/api/event/edit',{home_team: this.home_team,description: this.description})  
       .then(function (response)
