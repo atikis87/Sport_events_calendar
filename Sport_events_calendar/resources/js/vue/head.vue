@@ -1,17 +1,8 @@
 <template>
-<div>
-  <b-navbar type="dark" variant="dark">
-    <b-navbar-nav>
-      <b-nav-item href="#">Sport Event Calendar</b-nav-item>
-
-
-
-      <b-nav-item-dropdown text="User" right>
-        <b-dropdown-item href="#">Account</b-dropdown-item>
-        <b-dropdown-item href="#">Settings</b-dropdown-item>
-      </b-nav-item-dropdown>
-    </b-navbar-nav>
-  </b-navbar>
+<div id="head">
+  <div class="header">
+    <div class="header-img"></div>
+  </div>
 </div>
 </template>
 
@@ -22,5 +13,17 @@
 </script>
 
 <style scoped>
+.header {
+  height: 150px;
+}
+
+.header .header-img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-color: #010042;
+  height: 100%;
+  background-image: url('../../assets/sportradar_header.jpg');
+}
 
 </style>

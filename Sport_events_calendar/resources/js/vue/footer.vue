@@ -1,6 +1,6 @@
 <template>
   <div class="fluid-container footer">
-    <p class="text-center">Created by Attia Kiss.</p>
+    <p class="text-center">Created by Attila Kiss.</p>
   </div>
 </template>
 
