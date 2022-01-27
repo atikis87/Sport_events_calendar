@@ -2,7 +2,7 @@
 <div id="content">
 <div class="title">Sportradar Event Calendar</div>
 
-<b-form-select v-model="primary_category">
+<b-form-select v-model="primary_category" @select="filterByPrimaryCategory">
   <option v-for="category in primaryCategories" v-bind:value="category.id" v-bind:key="category.id">
     {{ category.display_name }}
   </option>
@@ -10,14 +10,14 @@
 
 <!-- SELECT HOME TEAM-->
 <b-form-select v-if="primary_category" v-model="home_team" @select="filterTeams">
-  <option v-for="team in allTeams" v-bind:value="team.id" v-bind:key="team.id">
+  <option v-for="team in homeTeamOptions" v-bind:value="team.id" v-bind:key="team.id">
     {{ team.display_name }}
   </option>
 </b-form-select>
 
 <!-- SELECT AWAY TEAM-->
 <b-form-select v-if="home_team" v-model="away_team">
-  <option v-for="team in allTeams" v-bind:value="team.id" v-bind:key="team.id">
+  <option v-for="team in awayTeamOptions" v-bind:value="team.id" v-bind:key="team.id">
     {{ team.display_name }}
   </option>
 </b-form-select>
@@ -33,7 +33,7 @@
   <b-button v-if="id" variant="warning" v-on:click="updateEvent">Update</b-button>
   <b-button v-if="id" variant="primary" v-on:click="resetEvent">Cancel</b-button>
   <!-- Table for Events-->
-  <table v-if="events.length > 0">
+  <table v-if="events && events.length > 0">
     <tr>
         <th width="50%">Date</th>
         <th width="50%"></th>
@@ -79,7 +79,9 @@ import VueNotifications from 'vue-notifications'
         primaryCategories: null,
         allTeams: null,
         start_time: null,
-        id: null
+        id: null,
+        homeTeamOptions: [],
+        awayTeamOptions: []
       }
     },
     mounted() {
@@ -89,7 +91,11 @@ import VueNotifications from 'vue-notifications'
     },
     methods: {
     filterTeams() {
-      console.log('teams are filtered')
+      this.awayTeamOptions = this.homeTeamOptions.filter(team => team.id !== this.home_team)
+    },
+    filterByPrimaryCategory() {
+      console.log('Hello')
+      this.homeTeamOptions = this.allTeams.filter(team => team.primary_category_id = this.primary_category)
     },
     getEvents()
     {
@@ -103,6 +109,7 @@ import VueNotifications from 'vue-notifications'
     },
     createEvent()
     {
+      let self = this
       axios.post('/api/event/store',{
         home_team_id: this.home_team,
         away_team_id: this.away_team,
@@ -111,15 +118,12 @@ import VueNotifications from 'vue-notifications'
         })  
       .then(function (response)
       {  
-        //display success
-      
-        console.log(response.data)  
+        self.successMessage('Success')
+         self.getEvents()
       })  
       .catch(function (error)
-      {  
-        //display error.... call this.showError()
-        // foreach() loop maybe
-       console.log(error)  
+      {  console.log(error)
+        self.errorMessage(error.message[0])
       });  
     },
     deleteEvent($id) /* Send the ID of the event only*/
@@ -127,7 +131,7 @@ import VueNotifications from 'vue-notifications'
       axios.post(`/api/event/delete/${id}`)  
       .then(function (response)
       {  
-        currentObj.output = response.data;  
+
       })  
       .catch(function (error)
       {  
@@ -145,20 +149,20 @@ import VueNotifications from 'vue-notifications'
     },
      updateEvent()/*EDIT HERE*/
     {
+      let self = this
       axios.post(`/api/event/edit/${this.id}`, {
         home_team_id: this.home_team,
         away_team_id: this.away_team,
         primary_category_id: this.primary_category,
         start_time: this.start_time,
-
       })  
       .then(function (response)
       {  
-        currentObj.output = response.data 
+        self.getEvents()
       })  
       .catch(function (error)
       {  
-        currentObj.output = error;  
+         console.log(error)
       });  
 
 
