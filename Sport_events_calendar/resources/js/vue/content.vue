@@ -29,8 +29,9 @@
   </div>
 
 <!-- Event buttons-->
-  <b-button variant="success" v-on:click="createEvent">Create</b-button>
-
+  <b-button v-if="!id" variant="success" v-on:click="createEvent">Create</b-button>
+  <b-button v-if="id" variant="warning" v-on:click="updateEvent">Update</b-button>
+  <b-button v-if="id" variant="primary" v-on:click="resetEvent">Cancel</b-button>
   <!-- Table for Events-->
   <table v-if="events.length > 0">
     <tr>
@@ -44,7 +45,7 @@
     <tr v-for="event in events" :key="event.id">
         <td v-if="event && event.hasOwnProperty('home_team')">{{ event.home_team.display_name }}</td>
         <td v-if="event && event.hasOwnProperty('away_team')">{{ event.away_team.display_name }}</td> 
-        <b-button variant="warning" v-on:click="editEvent(event.id)">Edit</b-button>
+        <b-button variant="warning" v-on:click="editEvent(event)">Edit</b-button>
         <b-button variant="danger" v-on:click="deleteEvent(event.id)">Delete</b-button>
     </tr>
   </table>
@@ -78,6 +79,7 @@ import VueNotifications from 'vue-notifications'
         primaryCategories: null,
         allTeams: null,
         start_time: null,
+        id: null
       }
     },
     mounted() {
@@ -122,7 +124,7 @@ import VueNotifications from 'vue-notifications'
     },
     deleteEvent($id) /* Send the ID of the event only*/
     {
-      axios.post(`/api/event/delete/${$id}`)  
+      axios.post(`/api/event/delete/${id}`)  
       .then(function (response)
       {  
         currentObj.output = response.data;  
@@ -133,12 +135,26 @@ import VueNotifications from 'vue-notifications'
       });  
 
     },
-    editEvent($id)/*EDIT HERE*/
+    editEvent(event)/*EDIT HERE*/
     {
-      axios.post('/api/event/edit',{home_team: this.home_team,description: this.description})  
+      this.home_team = event.home_team_id
+      this.away_team = event.away_team_id
+      this.start_time = event.start_time
+      this.primary_category = event.primary_category_id
+      this.id = event.id
+    },
+     updateEvent()/*EDIT HERE*/
+    {
+      axios.post(`/api/event/edit/${this.id}`, {
+        home_team_id: this.home_team,
+        away_team_id: this.away_team,
+        primary_category_id: this.primary_category,
+        start_time: this.start_time,
+
+      })  
       .then(function (response)
       {  
-        currentObj.output = response.data;  
+        currentObj.output = response.data 
       })  
       .catch(function (error)
       {  
@@ -146,6 +162,14 @@ import VueNotifications from 'vue-notifications'
       });  
 
 
+    },
+    resetEvent()
+    {
+      this.home_team = null
+      this.away_team = null
+      this.start_time = null
+      this.primary_category = null
+      this.id = null
     },
     getPrimaryCategory()
     {
@@ -155,8 +179,7 @@ import VueNotifications from 'vue-notifications'
       }).catch(error =>
       {
         console.log(error)
-      })
-              
+      })  
     },
     getTeams()
     {
@@ -168,7 +191,6 @@ import VueNotifications from 'vue-notifications'
       {
         console.log(error)
       })
-      
     }
     },
         

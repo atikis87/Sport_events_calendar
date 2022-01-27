@@ -43,7 +43,7 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, $id)
     {
-        //$request->all()->validated())
+        Event::where('id', $id)->update($request->all());
     }
 
     /**
