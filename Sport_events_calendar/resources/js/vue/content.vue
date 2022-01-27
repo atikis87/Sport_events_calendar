@@ -31,10 +31,6 @@
 <!-- Event buttons-->
   <b-button variant="success" v-on:click="createEvent">Create</b-button>
 
-<!-- for the table-->
-  <b-button variant="warning" v-on:click="editEvent">Edit</b-button>
-  <b-button variant="danger" v-on:click="deleteEvent">Delete</b-button>
-
   <!-- Table for Events-->
   <table v-if="events.length > 0">
     <tr>
@@ -56,7 +52,7 @@
 </template>
 
 <script>
-import { Datetime } from '@/vue-datetime'
+import { Datetime } from 'vue-datetime'
 import VueNotifications from 'vue-notifications'
 
   export default {
@@ -105,7 +101,6 @@ import VueNotifications from 'vue-notifications'
     },
     createEvent()
     {
-      console.log( 'home_team_id', this.home_team)
       axios.post('/api/event/store',{
         home_team_id: this.home_team,
         away_team_id: this.away_team,
@@ -127,7 +122,7 @@ import VueNotifications from 'vue-notifications'
     },
     deleteEvent($id) /* Send the ID of the event only*/
     {
-      axios.post('/api/event/delete',{$id})  
+      axios.post(`/api/event/delete/${$id}`)  
       .then(function (response)
       {  
         currentObj.output = response.data;  

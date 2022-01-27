@@ -6,9 +6,11 @@ import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
 import Vue from 'vue';
 import App from './app.vue';
+import VueNotifications from 'vue-notifications'
  
 Vue.use(Datetime);
 Vue.use(BootstrapVue)
+Vue.use(VueNotifications)
 Vue.use(IconsPlugin)
 Vue.component('app', require('./app.vue').default);
 

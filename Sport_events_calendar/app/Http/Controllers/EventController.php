@@ -54,6 +54,7 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
+        Event::where('id', $id)->delete();
         // SQL => Delete where id=5
     }
 }
