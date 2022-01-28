@@ -1,15 +1,15 @@
 <template>
-<div id="head">
-  <div class="header">
-    <div class="header-img"></div>
+  <div id="head">
+    <div class="header">
+      <div class="header-img"></div>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
-  export default {
-    
-  }
+export default {
+
+}
 </script>
 
 <style scoped>
@@ -23,7 +23,6 @@
   background-position: center;
   background-color: #010042;
   height: 100%;
-  background-image: url('../../assets/sportradar_header.jpg');
+  background-image: url("../../assets/sportradar_header.jpg");
 }
-
 </style>

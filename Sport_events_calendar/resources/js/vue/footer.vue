@@ -4,26 +4,19 @@
   </div>
 </template>
 
-
-
-<script>
-
-</script>
+<script></script>
 
 <style scoped>
-
-.fluid-container.footer{
+.fluid-container.footer {
   background: #010042;
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 4.5rem;            /* Footer height */
-
-
+  height: 4.5rem;
 }
 .fluid-container.footer > *:last-child {
-    margin-bottom: 0px;
-    color: #fff;
+  margin-bottom: 0px;
+  color: #fff;
 }
-
 </style>
+

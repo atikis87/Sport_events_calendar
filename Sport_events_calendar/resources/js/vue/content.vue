@@ -1,76 +1,117 @@
 <template>
-<div id="content">
-<div class="title">Sportradar Event Calendar</div>
+  <div id="content">
+    <div class="title">Sportradar Event Calendar</div>
 
-<b-form-select v-model="primary_category" @select="filterByPrimaryCategory">
-  <option v-for="category in primaryCategories" v-bind:value="category.id" v-bind:key="category.id">
-    {{ category.display_name }}
-  </option>
-</b-form-select>
+    <div>
+      <h3>Filter</h3>
+    </div>
 
-<!-- SELECT HOME TEAM-->
-<b-form-select v-if="primary_category" v-model="home_team" @select="filterTeams">
-  <option v-for="team in homeTeamOptions" v-bind:value="team.id" v-bind:key="team.id">
-    {{ team.display_name }}
-  </option>
-</b-form-select>
+    <b-form-select
+      v-model="primary_category"
+      :options="optionsForCategory"
+      @change="filterByPrimaryCategory"
+    >
+      <option
+        v-for="category in primaryCategories"
+        v-bind:value="category.id"
+        v-bind:key="category.id"
+      >
+        {{ category.display_name }}
+      </option>
+    </b-form-select>
 
-<!-- SELECT AWAY TEAM-->
-<b-form-select v-if="home_team" v-model="away_team">
-  <option v-for="team in awayTeamOptions" v-bind:value="team.id" v-bind:key="team.id">
-    {{ team.display_name }}
-  </option>
-</b-form-select>
+    <!-- SELECT HOME TEAM-->
+    <b-form-select
+      v-if="primary_category"
+      v-model="home_team"
+      @change="filterTeams"
+    >
+      <option
+        v-for="team in homeTeamOptions"
+        v-bind:value="team.id"
+        v-bind:key="team.id"
+      >
+        {{ team.display_name }}
+      </option>
+    </b-form-select>
 
-<!-- Date Time -->
-  <div>
-    <label for="example-datepicker">Choose a date for Event:</label>
-    <b-form-datepicker id="example-datepicker" v-model="start_time" class="mb-2"></b-form-datepicker>
+    <!-- SELECT AWAY TEAM-->
+    <b-form-select v-if="home_team" v-model="away_team">
+      <option
+        v-for="team in awayTeamOptions"
+        v-bind:value="team.id"
+        v-bind:key="team.id"
+      >
+        {{ team.display_name }}
+      </option>
+    </b-form-select>
+
+    <!-- Date Time -->
+    <div>
+      <label for="example-datepicker">Choose a date for Event:</label>
+      <datetime
+        id="example-datepicker"
+        v-model="start_time"
+        class="mb-2"
+        type="datetime"
+      ></datetime>
+    </div>
+
+    <!-- Primary Event buttons-->
+    <b-button v-if="!id" variant="success" v-on:click="createEvent"
+      >Create</b-button
+    >
+    <b-button v-if="id" variant="warning" v-on:click="updateEvent"
+      >Update</b-button
+    >
+    <b-button v-if="id" variant="primary" v-on:click="resetEvent"
+      >Cancel</b-button
+    >
+    <div id="table">  
+      <!-- Table for Events-->
+      <table id="eventList" v-if="events && events.length > 0">
+        <tr>
+          <th>Home Team</th>
+          <th>Away Team</th>
+          <th>Date</th>
+          <th>Action</th>
+          <th>Category</th>
+        </tr>
+
+        <tr v-for="event in events" :key="event.id">
+          <td v-if="event && event.hasOwnProperty('home_team')">
+            {{ event.home_team.display_name }}
+          </td>
+          <td v-if="event && event.hasOwnProperty('away_team')">
+            {{ event.away_team.display_name }}
+          </td>
+          <td v-if="event && event.hasOwnProperty('start_time')">
+            {{new Date(event.start_time).toString()}}
+          </td>
+          <td>
+            <b-button variant="warning" v-on:click="editEvent(event)"
+              >Edit</b-button
+            >
+            <b-button variant="danger" v-on:click="deleteEvent(event)"
+              >Delete</b-button
+            >
+          </td>
+          <td>{{event.primary_category.display_name}}</td>
+        </tr>
+      </table>
   </div>
-
-<!-- Event buttons-->
-  <b-button v-if="!id" variant="success" v-on:click="createEvent">Create</b-button>
-  <b-button v-if="id" variant="warning" v-on:click="updateEvent">Update</b-button>
-  <b-button v-if="id" variant="primary" v-on:click="resetEvent">Cancel</b-button>
-  <!-- Table for Events-->
-  <table v-if="events && events.length > 0">
-    <tr>
-        <th width="50%">Date</th>
-        <th width="50%"></th>
-        <th width="50%">Home Team</th>
-        <th width="50%">Away Team</th>
-
-    </tr>
-
-    <tr v-for="event in events" :key="event.id">
-        <td v-if="event && event.hasOwnProperty('home_team')">{{ event.home_team.display_name }}</td>
-        <td v-if="event && event.hasOwnProperty('away_team')">{{ event.away_team.display_name }}</td> 
-        <b-button variant="warning" v-on:click="editEvent(event)">Edit</b-button>
-        <b-button variant="danger" v-on:click="deleteEvent(event.id)">Delete</b-button>
-    </tr>
-  </table>
 </div>
+
 </template>
 
 <script>
-import { Datetime } from 'vue-datetime'
-import VueNotifications from 'vue-notifications'
+import DatePicker from 'vue2-datepicker'
 
   export default {
     components:{
-    datetime: Datetime
+    datetime: DatePicker
   },
-    notifications: {
-    errorMessage: {
-      type: VueNotifications.types.error,
-      title: 'Error'
-    },
-    successMessage: {
-      type: VueNotifications.types.success,
-      title: 'Success'
-    }
-  },
-    data(){
+    data() {
       return{
         events: null,
         home_team: null,
@@ -81,7 +122,8 @@ import VueNotifications from 'vue-notifications'
         start_time: null,
         id: null,
         homeTeamOptions: [],
-        awayTeamOptions: []
+        awayTeamOptions: [],
+        optionsForCategory: [{ value: null, text: 'Choose a category', disabled: false}],
       }
     },
     mounted() {
@@ -94,8 +136,9 @@ import VueNotifications from 'vue-notifications'
       this.awayTeamOptions = this.homeTeamOptions.filter(team => team.id !== this.home_team)
     },
     filterByPrimaryCategory() {
-      console.log('Hello')
-      this.homeTeamOptions = this.allTeams.filter(team => team.primary_category_id = this.primary_category)
+      this.homeTeamOptions = this.allTeams.filter(team => team.primary_category_id === this.primary_category)
+      this.home_team = null
+      this.away_team = null
     },
     getEvents()
     {
@@ -115,29 +158,28 @@ import VueNotifications from 'vue-notifications'
         away_team_id: this.away_team,
         primary_category_id: this.primary_category,
         start_time: this.start_time
-        })  
+        })
       .then(function (response)
-      {  
-        self.successMessage('Success')
-         self.getEvents()
-      })  
+      {
+        alert("Event saved")
+        self.getEvents()
+      })
       .catch(function (error)
-      {  console.log(error)
-        self.errorMessage(error.message[0])
-      });  
+      {
+        alert(error.message[0])
+      });
     },
-    deleteEvent($id) /* Send the ID of the event only*/
+    deleteEvent(event) /* Send the ID of the event only*/
     {
-      axios.post(`/api/event/delete/${id}`)  
+      axios.post(`/api/event/delete/${event.id}`)
       .then(function (response)
-      {  
-
-      })  
+      {
+        alert("The event has been deleted")
+      })
       .catch(function (error)
-      {  
-        currentObj.output = error;  
-      });  
-
+      {
+        alert(error.message[0])
+      })
     },
     editEvent(event)/*EDIT HERE*/
     {
@@ -147,7 +189,7 @@ import VueNotifications from 'vue-notifications'
       this.primary_category = event.primary_category_id
       this.id = event.id
     },
-     updateEvent()/*EDIT HERE*/
+     updateEvent()/*UPDATE HERE*/
     {
       let self = this
       axios.post(`/api/event/edit/${this.id}`, {
@@ -155,17 +197,16 @@ import VueNotifications from 'vue-notifications'
         away_team_id: this.away_team,
         primary_category_id: this.primary_category,
         start_time: this.start_time,
-      })  
+      })
       .then(function (response)
-      {  
+      {
         self.getEvents()
-      })  
+        alert("Updated")
+      })
       .catch(function (error)
-      {  
-         console.log(error)
-      });  
-
-
+      {
+        alert(error.message[0])
+      })
     },
     resetEvent()
     {
@@ -182,8 +223,8 @@ import VueNotifications from 'vue-notifications'
         this.primaryCategories = response.data
       }).catch(error =>
       {
-        console.log(error)
-      })  
+        alert(error.message[0])
+      })
     },
     getTeams()
     {
@@ -197,63 +238,65 @@ import VueNotifications from 'vue-notifications'
       })
     }
     },
-        
   }
 </script>
 
 <style scoped>
-#content{
-  width:800px;
-  margin:0 auto;
+#content {
+  width: 1000px;
+  margin: 0 auto;
   position: relative;
 }
 
-.title{
+#table{
+  height: 500px;
+  border:2px solid #010042;
+  overflow:auto;
+  
+
+}
+
+.title {
   position: relative;
-  margin:20px 0 20px 0;
-  width:100%;
+  margin: 20px 0 20px 0;
+  width: 100%;
   text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: bold;
-  font-size:25px;
-  color:black;
+  font-size: 25px;
+  color: black;
 }
 
-.add{
-  position: relative;
-  margin-top:20px;
-  width:100%;
-  text-align: left;
+#eventList {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: bold;
-  font-size:20px;
-  color:#494949;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.choose_cat{
-width:200px;
-position: fixed;
-top: 230px;
-right:50%;
+#eventList td,
+#eventList th {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-
-
-
-.labelForm{
-  width:300px;
+#eventList tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-
-
-.date_time{
-width:100px;
-position: relative;
-top: -30px;
-left:200px;
-
+#eventList tr:hover {
+  background-color: #ddd;
 }
 
+#eventList th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #010042;
+  color: white;
+}
 
-
+td,
+b-button {
+  text-align: center;
+}
 </style>

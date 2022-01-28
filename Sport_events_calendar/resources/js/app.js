@@ -1,20 +1,23 @@
 require('./bootstrap');
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import { Datetime } from 'vue-datetime'
-import 'vue-datetime/dist/vue-datetime.css'
 import Vue from 'vue';
 import App from './app.vue';
-import VueNotifications from 'vue-notifications'
- 
-Vue.use(Datetime);
+import {
+    BootstrapVue,
+    IconsPlugin
+} from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
+
+Vue.use(DatePicker);
 Vue.use(BootstrapVue)
-Vue.use(VueNotifications)
 Vue.use(IconsPlugin)
 Vue.component('app', require('./app.vue').default);
 
 const app = new Vue({
     el: '#app',
-    components:{'app':App}
+    components: {
+        'app': App
+    }
 });
