@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Event;
 use App\Http\Requests\EventRequest;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -16,10 +16,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            Event::with(['homeTeam', 'awayTeam', 'primaryCategory'])
-            ->get()
-        , Response::HTTP_OK);
+        return response()->json(Event::with(['homeTeam', 'awayTeam', 'primaryCategory'])
+            ->get() , Response::HTTP_OK);
     }
 
     /**
@@ -30,8 +28,10 @@ class EventController extends Controller
      */
     public function store(EventRequest $request)
     {
-        //server side validation
-        Event::create($request->all()->validated()); 
+        $values = $request->all();
+        $values['start_time'] = Carbon::parse($values['start_time']);
+
+        Event::create($values);
     }
 
     /**
@@ -43,7 +43,10 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, $id)
     {
-        Event::where('id', $id)->update($request->all());
+        $values = $request->all();
+        $values['start_time'] = Carbon::parse($values['start_time']);
+
+        Event::where('id', $id)->update($values);
     }
 
     /**
@@ -55,6 +58,5 @@ class EventController extends Controller
     public function destroy($id)
     {
         Event::where('id', $id)->delete();
-        // SQL => Delete where id=5
     }
 }

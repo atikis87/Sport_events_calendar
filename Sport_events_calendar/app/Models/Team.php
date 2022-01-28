@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,10 +13,7 @@ class Team extends Model
     use HasFactory;
 
     protected $table = 'teams';
-    protected $fillable = [
-        'primary_category_id',
-        'display_name'
-    ];
+    protected $fillable = ['primary_category_id', 'display_name'];
 
     public function primaryCategory()
     {

@@ -27,7 +27,13 @@ class PrimaryCategorySeeder extends Seeder
                 'display_name' => 'Basketball',
                 'updated_at' => Carbon::now(),
                 'created_at' => Carbon::now()
-            ]
+            ],
+            [
+                'id' => 3,
+                'display_name' => 'Ice Hockey',
+                'updated_at' => Carbon::now(),
+                'created_at' => Carbon::now()
+            ],
         ])
             ->each(function ($item) {
                 PrimaryCategory::create($item);

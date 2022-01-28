@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,9 +13,7 @@ class PrimaryCategory extends Model
     use HasFactory;
 
     protected $table = 'primary_categories';
-    protected $fillable = [
-        'display_name'
-    ];
+    protected $fillable = ['display_name'];
 
     public function team()
     {
@@ -27,6 +24,4 @@ class PrimaryCategory extends Model
     {
         return $this->hasOnbe(Event::class);
     }
-
-
 }
